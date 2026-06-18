@@ -1,0 +1,388 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de Refinanciación — Punto Financiamiento</title>
+<style>
+  :root{
+    --bg:#0f1419; --card:#1a2129; --line:#2a333d; --txt:#e6edf3;
+    --muted:#8b98a5; --accent:#2ea043; --accent2:#1f6feb; --warn:#d29922;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:linear-gradient(160deg,#0f1419,#131b24); color:var(--txt);
+    display:flex; align-items:flex-start; justify-content:center; padding:32px 16px;
+  }
+  .wrap{width:100%; max-width:560px}
+  h1{font-size:20px; margin:0 0 4px}
+  .sub{color:var(--muted); font-size:13px; margin:0 0 24px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px; margin-bottom:18px}
+  .card h2{font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent2); margin:0 0 16px}
+  label{display:block; font-size:13px; color:var(--muted); margin:0 0 6px; font-weight:600}
+  .field{margin-bottom:18px}
+  .field:last-child{margin-bottom:0}
+  input[type="number"],input[type="date"]{
+    width:100%; background:#0d1117; border:1px solid var(--line); color:var(--txt);
+    border-radius:10px; padding:12px 14px; font-size:16px; outline:none; transition:border .15s;
+  }
+  input[type="number"]:focus,input[type="date"]:focus{border-color:var(--accent2)}
+  input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.7)}
+  .inputwrap{position:relative}
+  .inputwrap .prefix{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:16px; pointer-events:none}
+  .inputwrap.has-prefix input{padding-left:30px}
+  .toggle{display:flex; gap:8px; margin-bottom:10px}
+  .toggle button{
+    flex:1; background:#0d1117; border:1px solid var(--line); color:var(--muted);
+    padding:9px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:600; transition:.15s;
+  }
+  .toggle button.active{background:var(--accent2); border-color:var(--accent2); color:#fff}
+  .row{display:flex; gap:14px}
+  .row .field{flex:1}
+  .result{background:linear-gradient(135deg,#16241a,#142019); border-color:#23402b}
+  .line{display:flex; justify-content:space-between; align-items:baseline; padding:10px 0; border-bottom:1px dashed var(--line)}
+  .line:last-child{border-bottom:none}
+  .line .k{color:var(--muted); font-size:14px}
+  .line .v{font-variant-numeric:tabular-nums; font-size:16px}
+  .line.muted .k,.line.muted .v{color:#6b7681; font-size:13px}
+  .total{padding-top:14px; margin-top:6px; border-top:2px solid #23402b}
+  .total .k{font-size:15px; color:var(--txt); font-weight:700}
+  .total .v{font-size:26px; font-weight:800; color:var(--accent)}
+  .hint{color:var(--muted); font-size:12px; margin-top:8px; line-height:1.5}
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  th,td{padding:9px 6px; text-align:right; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums}
+  th{color:var(--muted); font-weight:600; font-size:10px; text-transform:uppercase; letter-spacing:.04em}
+  th:first-child,td:first-child,th:last-child,td:last-child{text-align:center}
+  tr.fit td{color:var(--accent)}
+  tr.reco td{background:rgba(46,160,67,.14)}
+  tr.nofit td{color:var(--muted); opacity:.5}
+  .badge{display:inline-block; font-size:10px; padding:1px 6px; border-radius:6px; background:var(--accent); color:#fff; margin-left:6px; vertical-align:middle}
+  footer{text-align:center; color:#5a6672; font-size:11px; margin-top:8px}
+</style>
+
+<div class="wrap">
+  <h1>Calculadora de Refinanciación</h1>
+  <p class="sub">Reestructuración de créditos en mora — interés directo · Punto Financiamiento</p>
+
+  <!-- 1. CRÉDITO ORIGINAL -->
+  <div class="card">
+    <h2>1 · Crédito original</h2>
+    <div class="field">
+      <label for="capital">Capital original (lo prestado)</label>
+      <div class="inputwrap has-prefix"><span class="prefix">$</span>
+        <input type="number" id="capital" inputmode="decimal" placeholder="0" step="0.01" min="0"></div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="valorCuota">Valor de cada cuota</label>
+        <div class="inputwrap has-prefix"><span class="prefix">$</span>
+          <input type="number" id="valorCuota" inputmode="decimal" placeholder="0" step="0.01" min="0"></div>
+      </div>
+      <div class="field" style="max-width:150px">
+        <label for="cuotasTotales">Cuotas totales</label>
+        <input type="number" id="cuotasTotales" inputmode="numeric" placeholder="0" step="1" min="1">
+      </div>
+    </div>
+    <p class="hint" id="infoCredito">Cargá los datos del crédito original.</p>
+  </div>
+
+  <!-- 2. ESTADO -->
+  <div class="card">
+    <h2>2 · Estado actual</h2>
+    <div class="row">
+      <div class="field">
+        <label for="pagadas">Cuotas pagadas</label>
+        <input type="number" id="pagadas" inputmode="numeric" placeholder="0" step="1" min="0">
+      </div>
+      <div class="field">
+        <label for="enMora">Cuotas en mora (vencidas)</label>
+        <input type="number" id="enMora" inputmode="numeric" placeholder="0" step="1" min="0">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="fechaMora">Inicio de mora (cuota más vieja)</label>
+        <input type="date" id="fechaMora">
+      </div>
+      <div class="field">
+        <label for="fechaHasta">Fecha de cálculo</label>
+        <input type="date" id="fechaHasta">
+      </div>
+    </div>
+    <div class="field" style="max-width:200px">
+      <label for="tasaMora">Tasa diaria de mora (%)</label>
+      <div class="inputwrap has-prefix"><span class="prefix">%</span>
+        <input type="number" id="tasaMora" inputmode="decimal" placeholder="0" step="0.01" min="0"></div>
+    </div>
+    <p class="hint" id="estadoInfo">Pendientes (por vencer): <strong>0</strong> · Días de mora: <strong>0</strong></p>
+    <p class="hint" id="estadoWarn" style="display:none; color:var(--warn)"></p>
+  </div>
+
+  <!-- COMPOSICIÓN DEL MONTO A REFINANCIAR -->
+  <div class="card result">
+    <div class="line"><span class="k">Cuotas en mora (<span id="cMoraN">0</span>) — valor pleno</span><span class="v" id="cMora">$ 0,00</span></div>
+    <div class="line"><span class="k">Punitorio (mora diaria)</span><span class="v" id="cPunit">$ 0,00</span></div>
+    <div class="line"><span class="k">Cuotas pendientes (<span id="cPendN">0</span>) — capital + interés devengado</span><span class="v" id="cPend">$ 0,00</span></div>
+    <div class="line muted"><span class="k">↳ capital <span id="cPendCap">$ 0,00</span> · devengado a hoy <span id="cPendDev">$ 0,00</span> · futuro descartado <span id="cPendFut">$ 0,00</span></span><span class="v"></span></div>
+    <div class="line muted"><span class="k">Interés total generado del crédito</span><span class="v" id="cInteresGen">$ 0,00</span></div>
+    <div class="line total"><span class="k">Monto a refinanciar</span><span class="v" id="cBase">$ 0,00</span></div>
+    <p class="hint">Pendientes: el interés se devenga lineal hasta el vencimiento de cada cuota (cuotas mensuales). Solo se descarta el interés futuro no devengado; el plan nuevo lo reemplaza.</p>
+  </div>
+
+  <!-- 3. PLAN NUEVO -->
+  <div class="card">
+    <h2>3 · Plan de refinanciación</h2>
+    <div class="field">
+      <label>¿Cómo querés armar el plan?</label>
+      <div class="toggle" id="calcRefiToggle">
+        <button type="button" data-calc="porCuotas" class="active">Por cantidad de cuotas</button>
+        <button type="button" data-calc="porMonto">Por monto mensual</button>
+      </div>
+    </div>
+
+    <div class="field" id="fieldCuotas">
+      <label for="cuotas">Cantidad de cuotas nuevas</label>
+      <input type="number" id="cuotas" inputmode="numeric" placeholder="0" step="1" min="1">
+    </div>
+
+    <div class="row" id="fieldMonto" style="display:none">
+      <div class="field">
+        <label for="montoMensual">Monto que puede pagar por mes</label>
+        <div class="inputwrap has-prefix"><span class="prefix">$</span>
+          <input type="number" id="montoMensual" inputmode="decimal" placeholder="0" step="0.01" min="0"></div>
+      </div>
+      <div class="field" style="max-width:130px">
+        <label for="maxCuotas">Máx. cuotas</label>
+        <input type="number" id="maxCuotas" inputmode="numeric" value="12" step="1" min="1">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Interés directo de refinanciación</label>
+      <div class="toggle" id="modoRefiToggle">
+        <button type="button" data-modorefi="cuota" class="active">% por cuota</button>
+        <button type="button" data-modorefi="total">% total</button>
+      </div>
+      <div class="inputwrap has-prefix"><span class="prefix">%</span>
+        <input type="number" id="interesRefi" inputmode="decimal" placeholder="0" step="0.01" min="0" value="7"></div>
+      <p class="hint" id="modoRefiHint">Interés directo = Monto × (% ÷ 100) × cuotas. Ej: 7% × 3 = 21% · 7% × 12 = 84%.</p>
+    </div>
+  </div>
+
+  <!-- RESULTADO: PLAN FIJO -->
+  <div class="card result" id="resultRefi">
+    <div class="line"><span class="k">Monto a refinanciar (base)</span><span class="v" id="rBase">$ 0,00</span></div>
+    <div class="line"><span class="k">Interés de refinanciación</span><span class="v" id="rInteresRefi">$ 0,00</span></div>
+    <div class="line"><span class="k">Cantidad de cuotas</span><span class="v" id="rCuotas">0</span></div>
+    <div class="line"><span class="k">Valor de cada cuota</span><span class="v" id="rCuota">$ 0,00</span></div>
+    <div class="line total"><span class="k">Monto final refinanciado</span><span class="v" id="rRefi">$ 0,00</span></div>
+  </div>
+
+  <!-- RESULTADO: SIMULACIÓN -->
+  <div class="card result" id="resultTabla" style="display:none">
+    <p class="hint" id="tablaInfo" style="margin-top:0">Simulación de planes</p>
+    <table>
+      <thead>
+        <tr><th>Cuotas</th><th>Interés</th><th>Total</th><th>Valor cuota</th><th>¿Entra?</th></tr>
+      </thead>
+      <tbody id="tablaBody"></tbody>
+    </table>
+    <p class="hint" id="tablaWarn" style="display:none; color:var(--warn)"></p>
+  </div>
+
+  <footer>Cálculo local — no guarda ni envía datos. Verificá siempre el resultado antes de operar.</footer>
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  let modoRefi = "cuota";     // interés refi: "cuota" | "total"
+  let calcModo = "porCuotas"; // armado plan: "porCuotas" | "porMonto"
+
+  const fmt = n => isFinite(n)
+    ? "$ " + n.toLocaleString("es-AR", {minimumFractionDigits:2, maximumFractionDigits:2})
+    : "$ 0,00";
+
+  function parseFecha(s){ return s ? new Date(s + "T00:00:00") : null; }
+  function addMonths(date, m){ const d = new Date(date.getTime()); d.setMonth(d.getMonth() + m); return d; }
+
+  // Días entre dos fechas (yyyy-mm-dd), sin desfasaje por zona horaria. >= 0.
+  function diasEntre(desde, hasta){
+    if(!desde || !hasta) return 0;
+    const a = new Date(desde + "T00:00:00");
+    const b = new Date(hasta + "T00:00:00");
+    if(isNaN(a) || isNaN(b)) return 0;
+    const d = Math.round((b - a) / 86400000);
+    return d > 0 ? d : 0;
+  }
+
+  function calcular(){
+    // --- 1. Crédito original ---
+    const capital    = parseFloat($("capital").value)    || 0;
+    const valorCuota = parseFloat($("valorCuota").value) || 0;
+    const N          = parseInt($("cuotasTotales").value, 10) || 0;
+
+    const financiado      = valorCuota * N;
+    const interesTotalGen = financiado - capital;            // interés generado al originar
+    const capitalCuota    = N > 0 ? capital / N : 0;         // capital puro por cuota
+    const interesCuota    = valorCuota - capitalCuota;       // interés por cuota
+
+    $("infoCredito").innerHTML = N > 0
+      ? "Financiado: <strong>" + fmt(financiado) + "</strong> · Interés total generado: <strong>" +
+        fmt(interesTotalGen) + "</strong><br>Capital/cuota: " + fmt(capitalCuota) +
+        " · Interés/cuota: " + fmt(interesCuota)
+      : "Cargá los datos del crédito original.";
+
+    // --- 2. Estado ---
+    const pagadas = parseInt($("pagadas").value, 10) || 0;
+    const enMora  = parseInt($("enMora").value, 10)  || 0;
+    let pendientes = N - pagadas - enMora;
+    let warnEstado = "";
+    if(N > 0 && pendientes < 0){
+      warnEstado = "Pagadas (" + pagadas + ") + en mora (" + enMora +
+                   ") superan el total de cuotas (" + N + "). Revisá los números.";
+      pendientes = 0;
+    }
+
+    const dias     = diasEntre($("fechaMora").value, $("fechaHasta").value);
+    const tasaMora = parseFloat($("tasaMora").value) || 0;
+
+    // --- Composición del monto a refinanciar ---
+    const moraFace  = enMora * valorCuota;                 // mora: valor pleno (interés 100% devengado)
+    const punitorio = moraFace * (tasaMora / 100) * dias;  // solo sobre la mora
+
+    // Pendientes: capital + interés YA devengado a la fecha. El interés futuro (no devengado)
+    // se descarta porque el plan nuevo lo vuelve a cobrar. Devengamiento lineal desde el origen
+    // del crédito hasta el vencimiento de cada cuota; cuotas mensuales; origen deducido del inicio de mora.
+    const pendienteCapital = pendientes * capitalCuota;
+    let pendienteDevengado = 0;
+    const fIni  = parseFecha($("fechaMora").value);
+    const fCalc = parseFecha($("fechaHasta").value);
+    if(fIni && fCalc && N > 0 && pendientes > 0){
+      const origen = addMonths(fIni, -(pagadas + 1));      // venc. de cuota (pagadas+1) = inicio de mora
+      const transDias = Math.max(0, (fCalc - origen) / 86400000);
+      for(let k = pagadas + enMora + 1; k <= N; k++){
+        const totalDias = (addMonths(origen, k) - origen) / 86400000;
+        const f = totalDias > 0 ? Math.min(1, transDias / totalDias) : 0;
+        pendienteDevengado += interesCuota * f;
+      }
+    }
+    const pendienteTotal  = pendienteCapital + pendienteDevengado;
+    const pendienteFuturo = pendientes * interesCuota - pendienteDevengado; // descartado del cálculo
+    const base = moraFace + punitorio + pendienteTotal;
+
+    $("estadoInfo").innerHTML = "Pendientes (por vencer): <strong>" + pendientes +
+      "</strong> · Días de mora: <strong>" + dias + "</strong>";
+    $("estadoWarn").style.display = warnEstado ? "block" : "none";
+    $("estadoWarn").textContent = warnEstado;
+
+    $("cMoraN").textContent      = enMora;
+    $("cMora").textContent       = fmt(moraFace);
+    $("cPunit").textContent      = fmt(punitorio);
+    $("cPendN").textContent      = pendientes;
+    $("cPend").textContent       = fmt(pendienteTotal);
+    $("cPendCap").textContent    = fmt(pendienteCapital);
+    $("cPendDev").textContent    = fmt(pendienteDevengado);
+    $("cPendFut").textContent    = fmt(pendienteFuturo);
+    $("cInteresGen").textContent = fmt(interesTotalGen);
+    $("cBase").textContent       = fmt(base);
+
+    // --- 3. Plan ---
+    const tasa = (parseFloat($("interesRefi").value) || 0) / 100;
+    if(calcModo === "porCuotas") planFijo(base, tasa);
+    else                         planSimulacion(base, tasa);
+  }
+
+  // Interés directo de un plan de N cuotas.
+  function interesPlan(base, tasa, n){
+    return modoRefi === "cuota" ? base * tasa * n : base * tasa;
+  }
+
+  function planFijo(base, tasa){
+    const cuotas    = parseInt($("cuotas").value, 10) || 0;
+    const interes   = interesPlan(base, tasa, cuotas);
+    const totalRefi = base + interes;
+    $("rBase").textContent        = fmt(base);
+    $("rInteresRefi").textContent = fmt(interes);
+    $("rCuotas").textContent      = cuotas;
+    $("rCuota").textContent       = fmt(cuotas > 0 ? totalRefi / cuotas : 0);
+    $("rRefi").textContent        = fmt(totalRefi);
+  }
+
+  function planSimulacion(base, tasa){
+    const pago = parseFloat($("montoMensual").value) || 0;
+    const max  = Math.max(1, parseInt($("maxCuotas").value, 10) || 12);
+    const body = $("tablaBody");
+    body.innerHTML = "";
+
+    $("tablaInfo").innerHTML = pago > 0
+      ? "Con <strong>" + fmt(pago) + "</strong>/mes, planes de hasta <strong>" + max + "</strong> cuotas:"
+      : "Cargá el monto mensual para simular los planes (hasta " + max + " cuotas).";
+
+    let recomendada = 0;
+    for(let n = 1; n <= max; n++){
+      const interes   = interesPlan(base, tasa, n);
+      const totalRefi = base + interes;
+      const cuota     = totalRefi / n;
+      const entra     = pago > 0 && cuota <= pago;
+      if(entra && !recomendada) recomendada = n;
+
+      const tr = document.createElement("tr");
+      tr.className = pago === 0 ? "" : (entra ? "fit" : "nofit");
+      if(n === recomendada) tr.className += " reco";
+      tr.innerHTML =
+        "<td>" + n + (n === recomendada ? '<span class="badge">elegir</span>' : "") + "</td>" +
+        "<td>" + fmt(interes)   + "</td>" +
+        "<td>" + fmt(totalRefi) + "</td>" +
+        "<td>" + fmt(cuota)     + "</td>" +
+        "<td>" + (pago === 0 ? "—" : (entra ? "✓" : "✗")) + "</td>";
+      body.appendChild(tr);
+    }
+
+    if(pago > 0 && !recomendada){
+      $("tablaWarn").textContent =
+        "Con " + fmt(pago) + "/mes no entra ni en " + max +
+        " cuotas. Subí el monto mensual, ampliá el máximo de cuotas o bajá el interés.";
+      $("tablaWarn").style.display = "block";
+    } else {
+      $("tablaWarn").style.display = "none";
+    }
+  }
+
+  function setCalcModo(nuevo){
+    calcModo = nuevo;
+    const esCuotas = calcModo === "porCuotas";
+    document.querySelectorAll("#calcRefiToggle button").forEach(b =>
+      b.classList.toggle("active", b.dataset.calc === calcModo));
+    $("fieldCuotas").style.display  = esCuotas ? "block" : "none";
+    $("fieldMonto").style.display   = esCuotas ? "none"  : "flex";
+    $("resultRefi").style.display   = esCuotas ? "block" : "none";
+    $("resultTabla").style.display  = esCuotas ? "none"  : "block";
+    calcular();
+  }
+
+  function setModoRefi(nuevo){
+    modoRefi = nuevo;
+    document.querySelectorAll("#modoRefiToggle button").forEach(b =>
+      b.classList.toggle("active", b.dataset.modorefi === modoRefi));
+    $("modoRefiHint").textContent = modoRefi === "cuota"
+      ? "Interés directo = Monto × (% ÷ 100) × cuotas. Ej: 7% × 3 = 21% · 7% × 12 = 84%."
+      : "Interés = Monto × (% ÷ 100), una sola vez sobre el total.";
+    calcular();
+  }
+
+  document.querySelectorAll("#calcRefiToggle button").forEach(b =>
+    b.addEventListener("click", () => setCalcModo(b.dataset.calc)));
+  document.querySelectorAll("#modoRefiToggle button").forEach(b =>
+    b.addEventListener("click", () => setModoRefi(b.dataset.modorefi)));
+  ["capital","valorCuota","cuotasTotales","pagadas","enMora","fechaMora","fechaHasta",
+   "tasaMora","cuotas","interesRefi","montoMensual","maxCuotas"]
+    .forEach(id => $(id).addEventListener("input", calcular));
+
+  // Fecha de cálculo por defecto = hoy
+  const hoy = new Date();
+  $("fechaHasta").value =
+    hoy.getFullYear() + "-" +
+    String(hoy.getMonth()+1).padStart(2,"0") + "-" +
+    String(hoy.getDate()).padStart(2,"0");
+
+  calcular();
+</script>
