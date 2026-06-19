@@ -4,6 +4,16 @@
 
 ---
 
+## 2026-06-18 — Repo + deploy Etapa 1
+
+- **Repo creado y pusheado** (commit inicial autorizado explícitamente por ChuecoTriquis; init + push los hizo Claudia Seria por única vez). Identidad git **local** al repo (`jlpereyra22` / pereyrajose@nexotuc.com). Chequeo de secretos en staged: OK.
+  - Remoto: https://github.com/jlpereyra22/CalCuladoraRefinaciadoPunFIn
+- **Deploy: GitHub Pages** (rama `main`, `/root`). Elegido sobre Netlify para **aislamiento total de `sysadminpf`**: la cuenta Netlify logueada en el CLI es la de producción de PF; GitHub Pages corre en la cuenta personal de GitHub de ChuecoTriquis, sin ninguna relación con el sistema en producción.
+  - URL pública: https://jlpereyra22.github.io/CalCuladoraRefinaciadoPunFIn/
+- **Incidencia menor:** se cargó por error `calculadorapunfin` como *custom domain* (inválido) → se removió. GitHub pudo haber agregado un archivo `CNAME` en el remoto al setearlo; **pendiente verificar con `git pull`** para sincronizar el local.
+
+---
+
 ## 2026-06-18 — Plan de dos etapas
 
 - **Etapa 1 (ahora):** deploy standalone, sale **vacío** tal cual está, con **carga manual** de todos los datos. Objetivo: salir jugando ya, que el sistema trabaje solo. Sin tocar producción.

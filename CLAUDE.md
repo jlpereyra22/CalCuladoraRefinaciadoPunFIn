@@ -4,7 +4,9 @@
 >
 > **Proyecto:** Generador de Refinanciación (calculadora) · parte del ecosistema **Punto Financiamiento** (`sysadminpf`)
 > **Tipo:** Herramienta **standalone** · sitio estático (un solo `index.html`)
-> **Estado:** Etapa 1 — standalone con carga manual, lista para deploy
+> **Estado:** Etapa 1 — **deployada en GitHub Pages**, standalone con carga manual
+> **Repo:** https://github.com/jlpereyra22/CalCuladoraRefinaciadoPunFIn
+> **URL pública:** https://jlpereyra22.github.io/CalCuladoraRefinaciadoPunFIn/
 > Última actualización: 2026-06-18
 
 ---
@@ -41,7 +43,7 @@ No se conecta a ningún backend ni base de datos. No lee ni escribe en `sysadmin
 |---|---|
 | Frontend | HTML + CSS + JavaScript vanilla, en un único `index.html` (sin build, sin dependencias, sin CDN) |
 | Server local | `python -m http.server 8080 --bind 127.0.0.1` (solo para ver en local) |
-| Deploy (a definir) | Sitio estático → candidatos: Netlify (como `sysadminpf`) o GitHub Pages |
+| Deploy | **GitHub Pages** (rama `main`, carpeta `/root`) → re-deploy automático en cada push. **Cuenta personal de GitHub de ChuecoTriquis, separada de la cuenta Netlify de `sysadminpf`.** |
 
 Decisión de diseño: **un solo archivo, cero dependencias.** Se abre con doble click o se sirve estático. Prioridad: velocidad y que cualquiera lo pueda auditar.
 
@@ -103,7 +105,7 @@ Días de mora = fecha de cálculo − fecha de inicio de mora. Se aplica **solo*
 
 | Etapa | Alcance | Estado |
 |---|---|---|
-| **Etapa 1** | Standalone, **carga manual** de todos los datos. Se deploya solo y trabaja por sí mismo. Sale vacío (sin datos precargados). | **Actual — lista para deploy** |
+| **Etapa 1** | Standalone, **carga manual** de todos los datos. Se deploya solo y trabaja por sí mismo. Sale vacío (sin datos precargados). | **Deployada (GitHub Pages)** |
 | **Etapa 2** | Integración con `sysadminpf`: buscar el cliente/crédito directamente y **autocargar** capital, cuotas, pagos, mora. Elimina la carga manual. | Futuro |
 
 > Etapa 1 entrega valor sin tocar producción. Etapa 2 recién conecta con el sistema (decisión y diseño aparte).
