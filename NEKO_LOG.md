@@ -4,6 +4,25 @@
 
 ---
 
+## 2026-06-22 — Etapa 2 deployada en Netlify + mejoras UX
+
+### Deploy
+- Sitio creado en Netlify cuenta personal `pereyrajose848@gmail.com` (NO la de sysadminpf).
+- URL: **https://refi-punfin.netlify.app**
+- Comando: `netlify deploy --prod`. Variables seteadas via CLI sin loguear secretos.
+- Variables seteadas: `FIREBASE_SERVICE_ACCOUNT`, `FIREBASE_PROJECT_ID`, `APP_USER`, `APP_PASS`, `ALLOWED_ORIGIN`.
+
+### Mejoras UX implementadas en esta sesión
+1. **Opción 3 de plan — Cuota fija:** el cliente dice cuánto puede pagar por mes; el sistema calcula `N = ceil(base / (cuota - base × tasa))`, genera N−1 cuotas iguales + última cuota = el resto. Evita la circularidad usando la fórmula directa.
+2. **Tasa de mora fija:** campo `tasaMora` bloqueado en 0.4% (no editable por el operador). Antes era el campo del interés de refinanciación el que se quería bloquear — se corrigió.
+3. **Fechas en formato dd/mm/aa:** los inputs de fecha cambiaron de `type="date"` a `type="text"`; el ISO se guarda en `data-raw` para los cálculos internos.
+4. **Botones de copia al portapapeles:** dos mensajes pre-armados, uno para auditor (desglose completo) y uno para cliente (amigable). Aparecen cuando hay un plan calculado.
+5. **Selección de fila en tabla simulación:** en el modo "por monto mensual", el operador hace clic en la fila que quiere usar; la recomendada se auto-selecciona pero puede cambiarla. La copia usa la fila elegida.
+6. **Montos con puntos de miles:** los inputs de `montoMensual` y `montoFijo` cambiaron a `type="text"` con formato automático al tipear (800000 → 800.000).
+7. **Bypass de login en localhost:** en `netlify dev` el login se bypasea en el front-end detectando `location.hostname === "localhost"`. En producción sí pide credenciales.
+
+---
+
 ## 2026-06-19 — Etapa 2: integración Firebase (en progreso, no deployada)
 
 ### Rama: `integracion-firebase`
