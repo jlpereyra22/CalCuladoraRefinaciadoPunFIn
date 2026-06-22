@@ -1,0 +1,20 @@
+# Configuración de Netlify — Generador de Refinanciación (rama integración)
+# Sitio estático (index.html en la raíz) + funciones serverless de SOLO LECTURA.
+
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Rutas lindas opcionales: /api/buscar y /api/credito → funciones
+[[redirects]]
+  from = "/api/buscar"
+  to = "/.netlify/functions/buscar"
+  status = 200
+
+[[redirects]]
+  from = "/api/credito"
+  to = "/.netlify/functions/credito"
+  status = 200

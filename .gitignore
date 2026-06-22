@@ -1,11 +1,19 @@
 # === Credenciales y secretos (NUNCA subir) ===
 .env
 .env.*
+!.env.example
 *.key
 *.pem
 *-adminsdk-*.json
 serviceAccountKey.json
 secrets.json
+# Service account de la integración Firebase (read-only): jamás en el repo
+*service-account*.json
+*serviceaccount*.json
+firebase-service-account*.json
+
+# === Netlify ===
+.netlify/
 
 # === Dependencias (si en el futuro se agrega Node) ===
 node_modules/
@@ -38,3 +46,4 @@ Thumbs.db
 # === Temporales ===
 *.tmp
 scratchpad/
+deno.lock

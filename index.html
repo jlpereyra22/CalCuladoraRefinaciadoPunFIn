@@ -15,26 +15,42 @@
   }
   .wrap{width:100%; max-width:560px}
   h1{font-size:20px; margin:0 0 4px}
-  .sub{color:var(--muted); font-size:13px; margin:0 0 24px}
+  .sub{color:var(--muted); font-size:13px; margin:0 0 12px}
+  .legend{font-size:11px; color:var(--muted); margin:0 0 22px; display:flex; gap:14px; align-items:center; flex-wrap:wrap}
   .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px; margin-bottom:18px}
-  .card h2{font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent2); margin:0 0 16px}
+  .card h2{font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--accent2); margin:0 0 16px; display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+  /* Tarjeta de datos automáticos: se distingue visualmente */
+  .card.auto{background:#161b21; border-style:dashed}
+  .card.input-card{border-color:#27384d}
   label{display:block; font-size:13px; color:var(--muted); margin:0 0 6px; font-weight:600}
-  .field{margin-bottom:18px}
-  .field:last-child{margin-bottom:0}
-  input[type="number"],input[type="date"]{
+  input[type="number"],input[type="date"],input[type="text"]{
     width:100%; background:#0d1117; border:1px solid var(--line); color:var(--txt);
     border-radius:10px; padding:12px 14px; font-size:16px; outline:none; transition:border .15s;
   }
-  input[type="number"]:focus,input[type="date"]:focus{border-color:var(--accent2)}
+  input:focus{border-color:var(--accent2)}
   input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(.7)}
+  /* Campos bloqueados (automáticos): grises, no editables */
+  input:disabled{
+    background:#0a0e12; border-color:#1b232c; color:#9aa6b2;
+    -webkit-text-fill-color:#9aa6b2; cursor:not-allowed; font-weight:600;
+  }
+  input:disabled::-webkit-calendar-picker-indicator{opacity:.25}
+  .field{margin-bottom:18px}
+  .field:last-child{margin-bottom:0}
+  /* Campo que el usuario SÍ carga a mano: borde de acento que invita */
+  .field.manual input{border-color:var(--accent2); background:#0d1320}
   .inputwrap{position:relative}
   .inputwrap .prefix{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:16px; pointer-events:none}
   .inputwrap.has-prefix input{padding-left:30px}
-  .toggle{display:flex; gap:8px; margin-bottom:10px}
+  .tag{font-size:10px; font-weight:700; padding:2px 8px; border-radius:6px; letter-spacing:0; text-transform:none}
+  .tag-auto{background:#222c36; color:#8b98a5}
+  .tag-manual{background:rgba(31,111,235,.2); color:#7eb0ff}
+  .toggle{display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap}
   .toggle button{
     flex:1; background:#0d1117; border:1px solid var(--line); color:var(--muted);
-    padding:9px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:600; transition:.15s;
+    padding:11px; border-radius:9px; cursor:pointer; font-size:13px; font-weight:600; transition:.15s;
   }
+  .toggle button:hover{border-color:var(--accent2)}
   .toggle button.active{background:var(--accent2); border-color:var(--accent2); color:#fff}
   .row{display:flex; gap:14px}
   .row .field{flex:1}
@@ -55,63 +71,125 @@
   tr.fit td{color:var(--accent)}
   tr.reco td{background:rgba(46,160,67,.14)}
   tr.nofit td{color:var(--muted); opacity:.5}
+  #tablaBody tr{cursor:pointer; transition:filter .1s}
+  #tablaBody tr:hover{filter:brightness(1.2)}
+  #tablaBody tr.elegida{outline:2px solid var(--warn); outline-offset:-2px; background:rgba(210,153,34,.12) !important}
+  #tablaBody tr.elegida td{color:var(--warn) !important; opacity:1 !important}
   .badge{display:inline-block; font-size:10px; padding:1px 6px; border-radius:6px; background:var(--accent); color:#fff; margin-left:6px; vertical-align:middle}
+  .badge-elegir{background:var(--warn); color:#1a1100}
+  .btn{background:var(--accent2); border:1px solid var(--accent2); color:#fff; padding:12px 18px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; white-space:nowrap}
+  .btn:hover{filter:brightness(1.12)}
+  .resitem{border:1px solid var(--line); border-radius:10px; padding:12px; margin:10px 0}
+  .resitem .nom{font-weight:700; font-size:14px}
+  .resitem .meta{color:var(--muted); font-size:12px; margin-bottom:4px}
+  .credchip{display:block; width:100%; text-align:left; background:#0d1117; border:1px solid var(--accent2); color:var(--txt); border-radius:8px; padding:10px 12px; margin-top:6px; cursor:pointer; font-size:13px}
+  .credchip:hover{background:#13203a}
+  .badge-mock{display:inline-block; font-size:10px; padding:1px 7px; border-radius:6px; background:var(--warn); color:#1a1100; margin-left:8px; font-weight:700}
   footer{text-align:center; color:#5a6672; font-size:11px; margin-top:8px}
+  .btn-copy{flex:1; min-width:180px; background:var(--accent2); border:none; color:#fff; border-radius:10px; padding:13px 18px; font-size:14px; font-weight:700; cursor:pointer; transition:.15s}
+  .btn-copy:hover{background:#388bfd}
+  #copyToast{background:#1a2a1a; border:1px solid var(--accent); color:#7ee787; border-radius:10px; padding:12px 16px; font-size:13px; text-align:center}
+  /* Login overlay */
+  #login{position:fixed; inset:0; z-index:50; background:linear-gradient(160deg,#0f1419,#131b24); display:flex; align-items:center; justify-content:center; padding:24px}
+  #login .box{width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:28px}
+  #login h2{font-size:18px; margin:0 0 4px; color:var(--txt); text-transform:none; letter-spacing:0}
+  #login p.sub2{color:var(--muted); font-size:13px; margin:0 0 20px}
+  #login .field{margin-bottom:14px}
+  #login .btn{width:100%; justify-content:center; padding:13px; margin-top:6px}
+  #loginErr{color:var(--warn); font-size:13px; margin-top:10px; min-height:18px}
 </style>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="box">
+    <h2>🔐 Calculadora de Refinanciación</h2>
+    <p class="sub2">Ingresá tus credenciales para continuar.</p>
+    <div class="field manual">
+      <label for="loginUser">Usuario</label>
+      <input type="text" id="loginUser" autocomplete="username" placeholder="usuario">
+    </div>
+    <div class="field manual">
+      <label for="loginPass">Contraseña</label>
+      <input type="password" id="loginPass" autocomplete="current-password" placeholder="••••••••">
+    </div>
+    <button type="button" id="loginBtn" class="btn">Entrar</button>
+    <div id="loginErr"></div>
+  </div>
+</div>
 
 <div class="wrap">
   <h1>Calculadora de Refinanciación</h1>
   <p class="sub">Reestructuración de créditos en mora — interés directo · Punto Financiamiento</p>
+  <p class="legend">
+    <span><span class="tag tag-auto">🔒 automático</span> lo trae el sistema</span>
+    <span><span class="tag tag-manual">✎ a mano</span> lo cargás vos</span>
+  </p>
 
-  <!-- 1. CRÉDITO ORIGINAL -->
-  <div class="card">
-    <h2>1 · Crédito original</h2>
+  <!-- 0. BUSCAR EN EL SISTEMA -->
+  <div class="card input-card">
+    <h2>0 · Buscar crédito <span class="tag tag-manual">✎ empezá acá</span></h2>
+    <div class="row">
+      <div class="field manual" style="flex:2; margin-bottom:0">
+        <label for="buscarInput">DNI o apellido del cliente</label>
+        <input type="text" id="buscarInput" placeholder="Ej: 43204078 o Rostand" autocomplete="off">
+      </div>
+      <div class="field" style="display:flex; align-items:flex-end; margin-bottom:0">
+        <button type="button" id="buscarBtn" class="btn">🔍 Buscar</button>
+      </div>
+    </div>
+    <div id="buscarResultados"></div>
+    <p class="hint" id="buscarMsg">Buscá por DNI (lo más confiable) o apellido y elegí el crédito. Los datos se cargan solos.</p>
+  </div>
+
+  <!-- 1. CRÉDITO ORIGINAL (automático) -->
+  <div class="card auto">
+    <h2>1 · Crédito original <span class="tag tag-auto">🔒 automático</span></h2>
     <div class="field">
       <label for="capital">Capital original (lo prestado)</label>
       <div class="inputwrap has-prefix"><span class="prefix">$</span>
-        <input type="number" id="capital" inputmode="decimal" placeholder="0" step="0.01" min="0"></div>
+        <input type="text" id="capital" placeholder="—" data-raw="" disabled></div>
     </div>
     <div class="row">
       <div class="field">
         <label for="valorCuota">Valor de cada cuota</label>
         <div class="inputwrap has-prefix"><span class="prefix">$</span>
-          <input type="number" id="valorCuota" inputmode="decimal" placeholder="0" step="0.01" min="0"></div>
+          <input type="text" id="valorCuota" placeholder="—" data-raw="" disabled></div>
       </div>
       <div class="field" style="max-width:150px">
         <label for="cuotasTotales">Cuotas totales</label>
-        <input type="number" id="cuotasTotales" inputmode="numeric" placeholder="0" step="1" min="1">
+        <input type="number" id="cuotasTotales" placeholder="—" disabled>
       </div>
     </div>
-    <p class="hint" id="infoCredito">Cargá los datos del crédito original.</p>
+    <p class="hint" id="infoCredito">Buscá un crédito arriba para cargar los datos.</p>
   </div>
 
-  <!-- 2. ESTADO -->
-  <div class="card">
-    <h2>2 · Estado actual</h2>
+  <!-- 2. ESTADO (automático salvo tasa de mora) -->
+  <div class="card auto">
+    <h2>2 · Estado actual <span class="tag tag-auto">🔒 automático</span></h2>
     <div class="row">
       <div class="field">
         <label for="pagadas">Cuotas pagadas</label>
-        <input type="number" id="pagadas" inputmode="numeric" placeholder="0" step="1" min="0">
+        <input type="number" id="pagadas" placeholder="—" disabled>
       </div>
       <div class="field">
         <label for="enMora">Cuotas en mora (vencidas)</label>
-        <input type="number" id="enMora" inputmode="numeric" placeholder="0" step="1" min="0">
+        <input type="number" id="enMora" placeholder="—" disabled>
       </div>
     </div>
     <div class="row">
       <div class="field">
         <label for="fechaMora">Inicio de mora (cuota más vieja)</label>
-        <input type="date" id="fechaMora">
+        <input type="text" id="fechaMora" disabled>
       </div>
       <div class="field">
         <label for="fechaHasta">Fecha de cálculo</label>
-        <input type="date" id="fechaHasta">
+        <input type="text" id="fechaHasta" disabled>
       </div>
     </div>
-    <div class="field" style="max-width:200px">
+    <div class="field" style="max-width:220px">
       <label for="tasaMora">Tasa diaria de mora (%)</label>
       <div class="inputwrap has-prefix"><span class="prefix">%</span>
-        <input type="number" id="tasaMora" inputmode="decimal" placeholder="0" step="0.01" min="0"></div>
+        <input type="number" id="tasaMora" inputmode="decimal" placeholder="0" step="0.01" min="0" value="0.4" disabled></div>
     </div>
     <p class="hint" id="estadoInfo">Pendientes (por vencer): <strong>0</strong> · Días de mora: <strong>0</strong></p>
     <p class="hint" id="estadoWarn" style="display:none; color:var(--warn)"></p>
@@ -128,43 +206,46 @@
     <p class="hint">Pendientes: el interés se devenga lineal hasta el vencimiento de cada cuota (cuotas mensuales). Solo se descarta el interés futuro no devengado; el plan nuevo lo reemplaza.</p>
   </div>
 
-  <!-- 3. PLAN NUEVO -->
-  <div class="card">
-    <h2>3 · Plan de refinanciación</h2>
+  <!-- 3. PLAN NUEVO (a mano) -->
+  <div class="card input-card">
+    <h2>3 · Plan de refinanciación <span class="tag tag-manual">✎ cargá vos</span></h2>
     <div class="field">
       <label>¿Cómo querés armar el plan?</label>
       <div class="toggle" id="calcRefiToggle">
         <button type="button" data-calc="porCuotas" class="active">Por cantidad de cuotas</button>
         <button type="button" data-calc="porMonto">Por monto mensual</button>
+        <button type="button" data-calc="cuotaFija">Cuota fija</button>
       </div>
     </div>
 
-    <div class="field" id="fieldCuotas">
+    <div class="field manual" id="fieldCuotas">
       <label for="cuotas">Cantidad de cuotas nuevas</label>
       <input type="number" id="cuotas" inputmode="numeric" placeholder="0" step="1" min="1">
     </div>
 
     <div class="row" id="fieldMonto" style="display:none">
-      <div class="field">
+      <div class="field manual">
         <label for="montoMensual">Monto que puede pagar por mes</label>
         <div class="inputwrap has-prefix"><span class="prefix">$</span>
           <input type="number" id="montoMensual" inputmode="decimal" placeholder="0" step="0.01" min="0"></div>
       </div>
-      <div class="field" style="max-width:130px">
+      <div class="field manual" style="max-width:130px">
         <label for="maxCuotas">Máx. cuotas</label>
         <input type="number" id="maxCuotas" inputmode="numeric" value="12" step="1" min="1">
       </div>
     </div>
 
-    <div class="field">
-      <label>Interés directo de refinanciación</label>
-      <div class="toggle" id="modoRefiToggle">
-        <button type="button" data-modorefi="cuota" class="active">% por cuota</button>
-        <button type="button" data-modorefi="total">% total</button>
-      </div>
+    <div class="field manual" id="fieldCuotaFija" style="display:none">
+      <label for="montoFijo">Monto fijo de cada cuota</label>
+      <div class="inputwrap has-prefix"><span class="prefix">$</span>
+        <input type="number" id="montoFijo" inputmode="decimal" placeholder="0" step="0.01" min="0"></div>
+    </div>
+
+    <div class="field manual">
+      <label id="interesLabelRefi">Interés total del plan (%)</label>
       <div class="inputwrap has-prefix"><span class="prefix">%</span>
         <input type="number" id="interesRefi" inputmode="decimal" placeholder="0" step="0.01" min="0" value="7"></div>
-      <p class="hint" id="modoRefiHint">Interés directo = Monto × (% ÷ 100) × cuotas. Ej: 7% × 3 = 21% · 7% × 12 = 84%.</p>
+      <p class="hint" id="modoRefiHint"></p>
     </div>
   </div>
 
@@ -189,22 +270,66 @@
     <p class="hint" id="tablaWarn" style="display:none; color:var(--warn)"></p>
   </div>
 
+  <!-- RESULTADO: CUOTA FIJA -->
+  <div class="card result" id="resultCuotaFija" style="display:none">
+    <p id="rfcErr" style="margin:0 0 10px; color:var(--warn)"></p>
+    <div id="rfcBody">
+      <div class="line"><span class="k">Monto a refinanciar (base)</span><span class="v" id="rfcBase">$ 0,00</span></div>
+      <div class="line"><span class="k">Interés de refinanciación</span><span class="v" id="rfcInteres">$ 0,00</span></div>
+      <div class="line total"><span class="k">Total refinanciado</span><span class="v" id="rfcTotal">$ 0,00</span></div>
+      <div class="line"><span class="k">Cantidad de cuotas</span><span class="v" id="rfcN">0</span></div>
+      <div class="line" id="rfcCuotasRow"><span class="k"><span id="rfcNMenos1">0</span> cuotas de</span><span class="v" id="rfcMonto">$ 0,00</span></div>
+      <div class="line" id="rfcUltimaRow"><span class="k">Última cuota</span><span class="v" id="rfcUltima">$ 0,00</span></div>
+    </div>
+  </div>
+
+  <!-- BOTONES DE COPIA -->
+  <div id="copyBtns" style="display:none; gap:12px; margin-bottom:18px; flex-wrap:wrap">
+    <button type="button" class="btn-copy" id="btnAuditor" onclick="copiarMensaje('auditor')">📋 Copiar para auditor</button>
+    <button type="button" class="btn-copy" id="btnCliente" onclick="copiarMensaje('cliente')">📱 Copiar para cliente</button>
+  </div>
+  <div id="copyToast" style="display:none"></div>
+
   <footer>Cálculo local — no guarda ni envía datos. Verificá siempre el resultado antes de operar.</footer>
 </div>
 
 <script>
   const $ = id => document.getElementById(id);
-  let modoRefi = "cuota";     // interés refi: "cuota" | "total"
-  let calcModo = "porCuotas"; // armado plan: "porCuotas" | "porMonto"
+  let modoRefi = "total";
+  let calcModo = "porCuotas";
+  let currentCliente = { nombre: "", dni: "", comercio: "" };
+  let snap = null;
 
   const fmt = n => isFinite(n)
     ? "$ " + n.toLocaleString("es-AR", {minimumFractionDigits:2, maximumFractionDigits:2})
     : "$ 0,00";
+  // Número con separador de miles, sin símbolo (para los campos automáticos).
+  const fmtNum = n => (isFinite(n) ? Number(n).toLocaleString("es-AR", {maximumFractionDigits:2}) : "");
 
+  // Campos bloqueados de dinero: el valor real va en data-raw, se muestra formateado.
+  function setMonto(id, n){
+    const el = $(id);
+    el.dataset.raw = (n != null && isFinite(n)) ? String(n) : "";
+    el.value = (n != null && isFinite(n)) ? fmtNum(n) : "";
+  }
+  function lockedNum(id){
+    const v = parseFloat($(id).dataset.raw);
+    return isFinite(v) ? v : 0;
+  }
+
+  function setFecha(id, iso){
+    const el = $(id);
+    el.dataset.raw = iso || "";
+    if(iso){
+      const p = iso.slice(0,10).split("-");
+      el.value = p[2] + "/" + p[1] + "/" + p[0].slice(2);
+    } else {
+      el.value = "";
+    }
+  }
   function parseFecha(s){ return s ? new Date(s + "T00:00:00") : null; }
   function addMonths(date, m){ const d = new Date(date.getTime()); d.setMonth(d.getMonth() + m); return d; }
 
-  // Días entre dos fechas (yyyy-mm-dd), sin desfasaje por zona horaria. >= 0.
   function diasEntre(desde, hasta){
     if(!desde || !hasta) return 0;
     const a = new Date(desde + "T00:00:00");
@@ -215,21 +340,21 @@
   }
 
   function calcular(){
-    // --- 1. Crédito original ---
-    const capital    = parseFloat($("capital").value)    || 0;
-    const valorCuota = parseFloat($("valorCuota").value) || 0;
+    // --- 1. Crédito original (valores automáticos bloqueados) ---
+    const capital    = lockedNum("capital");
+    const valorCuota = lockedNum("valorCuota");
     const N          = parseInt($("cuotasTotales").value, 10) || 0;
 
     const financiado      = valorCuota * N;
-    const interesTotalGen = financiado - capital;            // interés generado al originar
-    const capitalCuota    = N > 0 ? capital / N : 0;         // capital puro por cuota
-    const interesCuota    = valorCuota - capitalCuota;       // interés por cuota
+    const interesTotalGen = financiado - capital;
+    const capitalCuota    = N > 0 ? capital / N : 0;
+    const interesCuota    = valorCuota - capitalCuota;
 
     $("infoCredito").innerHTML = N > 0
       ? "Financiado: <strong>" + fmt(financiado) + "</strong> · Interés total generado: <strong>" +
         fmt(interesTotalGen) + "</strong><br>Capital/cuota: " + fmt(capitalCuota) +
         " · Interés/cuota: " + fmt(interesCuota)
-      : "Cargá los datos del crédito original.";
+      : "Buscá un crédito arriba para cargar los datos.";
 
     // --- 2. Estado ---
     const pagadas = parseInt($("pagadas").value, 10) || 0;
@@ -238,26 +363,23 @@
     let warnEstado = "";
     if(N > 0 && pendientes < 0){
       warnEstado = "Pagadas (" + pagadas + ") + en mora (" + enMora +
-                   ") superan el total de cuotas (" + N + "). Revisá los números.";
+                   ") superan el total de cuotas (" + N + ").";
       pendientes = 0;
     }
 
-    const dias     = diasEntre($("fechaMora").value, $("fechaHasta").value);
+    const dias     = diasEntre($("fechaMora").dataset.raw, $("fechaHasta").dataset.raw);
     const tasaMora = parseFloat($("tasaMora").value) || 0;
 
     // --- Composición del monto a refinanciar ---
-    const moraFace  = enMora * valorCuota;                 // mora: valor pleno (interés 100% devengado)
-    const punitorio = moraFace * (tasaMora / 100) * dias;  // solo sobre la mora
+    const moraFace  = enMora * valorCuota;
+    const punitorio = moraFace * (tasaMora / 100) * dias;
 
-    // Pendientes: capital + interés YA devengado a la fecha. El interés futuro (no devengado)
-    // se descarta porque el plan nuevo lo vuelve a cobrar. Devengamiento lineal desde el origen
-    // del crédito hasta el vencimiento de cada cuota; cuotas mensuales; origen deducido del inicio de mora.
     const pendienteCapital = pendientes * capitalCuota;
     let pendienteDevengado = 0;
-    const fIni  = parseFecha($("fechaMora").value);
-    const fCalc = parseFecha($("fechaHasta").value);
+    const fIni  = parseFecha($("fechaMora").dataset.raw);
+    const fCalc = parseFecha($("fechaHasta").dataset.raw);
     if(fIni && fCalc && N > 0 && pendientes > 0){
-      const origen = addMonths(fIni, -(pagadas + 1));      // venc. de cuota (pagadas+1) = inicio de mora
+      const origen = addMonths(fIni, -(pagadas + 1));
       const transDias = Math.max(0, (fCalc - origen) / 86400000);
       for(let k = pagadas + enMora + 1; k <= N; k++){
         const totalDias = (addMonths(origen, k) - origen) / 86400000;
@@ -266,7 +388,7 @@
       }
     }
     const pendienteTotal  = pendienteCapital + pendienteDevengado;
-    const pendienteFuturo = pendientes * interesCuota - pendienteDevengado; // descartado del cálculo
+    const pendienteFuturo = pendientes * interesCuota - pendienteDevengado;
     const base = moraFace + punitorio + pendienteTotal;
 
     $("estadoInfo").innerHTML = "Pendientes (por vencer): <strong>" + pendientes +
@@ -287,11 +409,24 @@
 
     // --- 3. Plan ---
     const tasa = (parseFloat($("interesRefi").value) || 0) / 100;
-    if(calcModo === "porCuotas") planFijo(base, tasa);
-    else                         planSimulacion(base, tasa);
+    snap = {
+      cliente: { ...currentCliente },
+      fechaMora: $("fechaMora").value,
+      fechaHasta: $("fechaHasta").value,
+      dias, tasaMora,
+      capital, valorCuota, N, pagadas, enMora, pendientes,
+      moraFace, punitorio,
+      pendienteCapital, pendienteDevengado, pendienteFuturo,
+      base, tasa,
+      plan: null
+    };
+    if(calcModo === "porCuotas")     planFijo(base, tasa);
+    else if(calcModo === "porMonto") planSimulacion(base, tasa);
+    else                             planCuotaFija(base, tasa);
+    $("copyBtns").style.display = snap.plan ? "flex" : "none";
   }
 
-  // Interés directo de un plan de N cuotas.
+  // Interés directo: por modo. "total" = una vez sobre el monto · "cuota" = por cada cuota.
   function interesPlan(base, tasa, n){
     return modoRefi === "cuota" ? base * tasa * n : base * tasa;
   }
@@ -300,24 +435,27 @@
     const cuotas    = parseInt($("cuotas").value, 10) || 0;
     const interes   = interesPlan(base, tasa, cuotas);
     const totalRefi = base + interes;
+    const cuotaVal  = cuotas > 0 ? totalRefi / cuotas : 0;
     $("rBase").textContent        = fmt(base);
     $("rInteresRefi").textContent = fmt(interes);
     $("rCuotas").textContent      = cuotas;
-    $("rCuota").textContent       = fmt(cuotas > 0 ? totalRefi / cuotas : 0);
+    $("rCuota").textContent       = fmt(cuotaVal);
     $("rRefi").textContent        = fmt(totalRefi);
+    if(cuotas > 0) snap.plan = { modo: "porCuotas", n: cuotas, tasa: tasa*100, interes, total: totalRefi, cuota: cuotaVal };
   }
 
   function planSimulacion(base, tasa){
-    const pago = parseFloat($("montoMensual").value) || 0;
+    const pago = rawNum("montoMensual");
     const max  = Math.max(1, parseInt($("maxCuotas").value, 10) || 12);
     const body = $("tablaBody");
     body.innerHTML = "";
 
     $("tablaInfo").innerHTML = pago > 0
-      ? "Con <strong>" + fmt(pago) + "</strong>/mes, planes de hasta <strong>" + max + "</strong> cuotas:"
+      ? "Con <strong>" + fmt(pago) + "</strong>/mes, hasta <strong>" + max + "</strong> cuotas — hacé clic en una fila para elegirla:"
       : "Cargá el monto mensual para simular los planes (hasta " + max + " cuotas).";
 
     let recomendada = 0;
+    const rows = [];
     for(let n = 1; n <= max; n++){
       const interes   = interesPlan(base, tasa, n);
       const totalRefi = base + interes;
@@ -328,13 +466,28 @@
       const tr = document.createElement("tr");
       tr.className = pago === 0 ? "" : (entra ? "fit" : "nofit");
       if(n === recomendada) tr.className += " reco";
+      const planData = { modo: "porMonto", n, tasa: tasa*100, interes, total: totalRefi, cuota, montoMax: pago };
       tr.innerHTML =
-        "<td>" + n + (n === recomendada ? '<span class="badge">elegir</span>' : "") + "</td>" +
+        "<td>" + n + (n === recomendada ? '<span class="badge">recomendada</span>' : "") + "</td>" +
         "<td>" + fmt(interes)   + "</td>" +
         "<td>" + fmt(totalRefi) + "</td>" +
         "<td>" + fmt(cuota)     + "</td>" +
         "<td>" + (pago === 0 ? "—" : (entra ? "✓" : "✗")) + "</td>";
+      tr.addEventListener("click", function(){
+        body.querySelectorAll("tr.elegida").forEach(r => r.classList.remove("elegida"));
+        this.classList.add("elegida");
+        snap.plan = planData;
+        $("copyBtns").style.display = "flex";
+      });
       body.appendChild(tr);
+      rows.push({ tr, n, planData, isReco: n === recomendada });
+    }
+
+    // Auto-seleccionar la recomendada (o la primera si no hay)
+    const autoSelect = rows.find(r => r.isReco) || rows[0];
+    if(autoSelect && pago > 0){
+      autoSelect.tr.classList.add("elegida");
+      snap.plan = autoSelect.planData;
     }
 
     if(pago > 0 && !recomendada){
@@ -347,42 +500,295 @@
     }
   }
 
+  function planCuotaFija(base, tasa){
+    $("resultRefi").style.display      = "none";
+    $("resultTabla").style.display     = "none";
+    $("resultCuotaFija").style.display = "none";
+    if(base <= 0) return;
+
+    const m = rawNum("montoFijo");
+    if(m <= 0) return;
+
+    const interestPerCuota = base * tasa;
+    if(m <= interestPerCuota){
+      $("rfcErr").textContent    = "El monto no alcanza a cubrir el interés por cuota (" + fmt(interestPerCuota) + "). Aumentá el monto o bajá la tasa.";
+      $("rfcBody").style.display = "none";
+      $("resultCuotaFija").style.display = "block";
+      return;
+    }
+
+    const N          = Math.ceil(base / (m - interestPerCuota));
+    const interes    = base * tasa * N;
+    const total      = base + interes;
+    const ultimaCuota = total - (N - 1) * m;
+
+    $("rfcBase").textContent    = fmt(base);
+    $("rfcInteres").textContent = fmt(interes);
+    $("rfcTotal").textContent   = fmt(total);
+    $("rfcN").textContent       = N;
+    $("rfcErr").textContent     = "";
+    $("rfcBody").style.display  = "block";
+
+    if(N === 1){
+      $("rfcCuotasRow").style.display = "none";
+      $("rfcUltimaRow").style.display = "block";
+      $("rfcUltima").textContent = fmt(total);
+    } else {
+      $("rfcCuotasRow").style.display = "block";
+      $("rfcUltimaRow").style.display = "block";
+      $("rfcNMenos1").textContent = N - 1;
+      $("rfcMonto").textContent   = fmt(m);
+      $("rfcUltima").textContent  = fmt(ultimaCuota);
+    }
+    $("resultCuotaFija").style.display = "block";
+    snap.plan = { modo: "cuotaFija", n: N, tasa: tasa*100, interes, total, montoFijo: m, ultimaCuota };
+  }
+
+  // El tipo de interés queda atado al modo (evita errores del operador):
+  //   Por cantidad de cuotas → % TOTAL (una vez)
+  //   Por monto mensual / cuota fija → % POR CUOTA (individual)
   function setCalcModo(nuevo){
     calcModo = nuevo;
-    const esCuotas = calcModo === "porCuotas";
+    const esCuotas    = calcModo === "porCuotas";
+    const esMonto     = calcModo === "porMonto";
+    const esCuotaFija = calcModo === "cuotaFija";
+    modoRefi = esCuotas ? "total" : "cuota";
+
     document.querySelectorAll("#calcRefiToggle button").forEach(b =>
       b.classList.toggle("active", b.dataset.calc === calcModo));
-    $("fieldCuotas").style.display  = esCuotas ? "block" : "none";
-    $("fieldMonto").style.display   = esCuotas ? "none"  : "flex";
-    $("resultRefi").style.display   = esCuotas ? "block" : "none";
-    $("resultTabla").style.display  = esCuotas ? "none"  : "block";
+    $("fieldCuotas").style.display     = esCuotas    ? "block" : "none";
+    $("fieldMonto").style.display      = esMonto     ? "flex"  : "none";
+    $("fieldCuotaFija").style.display  = esCuotaFija ? "block" : "none";
+    $("resultRefi").style.display      = esCuotas    ? "block" : "none";
+    $("resultTabla").style.display     = esMonto     ? "block" : "none";
+    $("resultCuotaFija").style.display = esCuotaFija ? "block" : "none";
+
+    $("interesLabelRefi").textContent = esCuotas
+      ? "Interés total del plan (%)"
+      : "Interés por cuota (%)";
+    $("modoRefiHint").textContent = esCuotas
+      ? "Se aplica UNA sola vez sobre el monto. Ej: 12 cuotas al 95% = 95% total (no por cuota)."
+      : esCuotaFija
+        ? "Se aplica POR CADA cuota. El sistema calcula cuántas cuotas hacen falta para cubrir el monto."
+        : "Se aplica POR CADA cuota. Ej: 7% × 5 cuotas = 35% sobre el monto.";
+
     calcular();
   }
 
-  function setModoRefi(nuevo){
-    modoRefi = nuevo;
-    document.querySelectorAll("#modoRefiToggle button").forEach(b =>
-      b.classList.toggle("active", b.dataset.modorefi === modoRefi));
-    $("modoRefiHint").textContent = modoRefi === "cuota"
-      ? "Interés directo = Monto × (% ÷ 100) × cuotas. Ej: 7% × 3 = 21% · 7% × 12 = 84%."
-      : "Interés = Monto × (% ÷ 100), una sola vez sobre el total.";
-    calcular();
+  // ── Formateo de inputs manuales de dinero (montoMensual, montoFijo) ──────────
+  function fmtInput(el){
+    const raw = el.value.replace(/\./g, "").replace(/[^0-9]/g, "");
+    el.dataset.rawNum = raw;
+    el.value = raw === "" ? "" : Number(raw).toLocaleString("es-AR");
+  }
+  ["montoMensual","montoFijo"].forEach(id => {
+    const el = $(id);
+    el.type = "text";
+    el.inputMode = "numeric";
+    el.addEventListener("input", () => { fmtInput(el); calcular(); });
+  });
+  // getValue numérico para esos campos
+  function rawNum(id){ return parseFloat(($(id).dataset.rawNum || "").replace(/\./g,"") || "0") || 0; }
+
+  // ── Copy to clipboard ────────────────────────────────────────────────────────
+  function planDesc(p){
+    if(!p) return "Sin plan cargado.";
+    const modos = { porCuotas: "Por cantidad de cuotas", porMonto: "Por monto mensual", cuotaFija: "Cuota fija" };
+    if(p.modo === "porCuotas") return modos[p.modo] + " — " + p.n + " cuotas · " + fmt(p.cuota) + " c/u · Total: " + fmt(p.total);
+    if(p.modo === "porMonto")  return modos[p.modo] + " — " + p.n + " cuotas · " + fmt(p.cuota) + " c/u · Total: " + fmt(p.total);
+    if(p.modo === "cuotaFija"){
+      if(p.n === 1) return modos[p.modo] + " — 1 cuota de " + fmt(p.total);
+      return modos[p.modo] + " — " + (p.n-1) + " cuotas de " + fmt(p.montoFijo) + " + última cuota de " + fmt(p.ultimaCuota) + " · Total: " + fmt(p.total);
+    }
+    return "";
+  }
+
+  function mensajeAuditor(s){
+    const c = s.cliente;
+    const sep = "─".repeat(42);
+    return [
+      "SOLICITUD DE REFINANCIACIÓN — AUDITORÍA",
+      sep,
+      "Fecha de cálculo: " + s.fechaHasta,
+      "",
+      "TITULAR",
+      "Nombre:  " + (c.nombre  || "—"),
+      "DNI:     " + (c.dni     || "—"),
+      "Comercio:" + (c.comercio|| "—"),
+      "",
+      "CRÉDITO ORIGINAL",
+      "Capital: " + fmt(s.capital) + "  |  Cuotas: " + s.N + "  |  Valor c/cuota: " + fmt(s.valorCuota),
+      "Pagadas: " + s.pagadas + "  |  En mora: " + s.enMora + "  |  Pendientes: " + s.pendientes,
+      "Inicio de mora: " + s.fechaMora + "  |  Días de mora: " + s.dias,
+      "",
+      "COMPOSICIÓN DEL MONTO A REFINANCIAR",
+      "Cuotas en mora (" + s.enMora + " — valor pleno):  " + fmt(s.moraFace),
+      "Punitorio (" + s.dias + " días × " + s.tasaMora + "%/día):  " + fmt(s.punitorio),
+      "Cuotas pendientes (" + s.pendientes + "):  " + fmt(s.pendienteCapital + s.pendienteDevengado),
+      "  └ Capital: " + fmt(s.pendienteCapital) + "  |  Devengado: " + fmt(s.pendienteDevengado) + "  |  Futuro descartado: " + fmt(s.pendienteFuturo),
+      sep,
+      "BASE A REFINANCIAR:  " + fmt(s.base),
+      sep,
+      "",
+      "PLAN NUEVO",
+      "Interés: " + (s.tasa * 100).toFixed(2) + "% por cuota",
+      planDesc(s.plan),
+    ].join("\n");
+  }
+
+  function mensajeCliente(s){
+    const c = s.cliente;
+    const p = s.plan;
+    const nombre = c.nombre ? c.nombre.split(" ")[0] : "Cliente";
+    let planLinea = "";
+    if(p){
+      if(p.modo === "porCuotas" || p.modo === "porMonto") planLinea = p.n + " cuotas de " + fmt(p.cuota);
+      else if(p.modo === "cuotaFija") planLinea = p.n === 1
+        ? "1 cuota de " + fmt(p.total)
+        : (p.n-1) + " cuotas de " + fmt(p.montoFijo) + " + última cuota de " + fmt(p.ultimaCuota);
+    }
+    return [
+      "Hola " + nombre + "!",
+      "",
+      "Te preparamos tu plan de refinanciación" + (c.comercio ? " para tu crédito en " + c.comercio : "") + ".",
+      "",
+      "Monto a refinanciar:  " + fmt(s.base),
+      "Plan propuesto:       " + (planLinea || "—"),
+      "Total a pagar:        " + (p ? fmt(p.total) : "—"),
+      "",
+      "Cualquier consulta, comunicate con nosotros.",
+      "Punto Financiamiento",
+    ].join("\n");
+  }
+
+  function copiarMensaje(tipo){
+    if(!snap || !snap.plan){ alert("Completá el cálculo antes de copiar."); return; }
+    const texto = tipo === "auditor" ? mensajeAuditor(snap) : mensajeCliente(snap);
+    navigator.clipboard.writeText(texto).then(() => {
+      const t = $("copyToast");
+      t.textContent = tipo === "auditor"
+        ? "✓ Mensaje para auditor copiado al portapapeles."
+        : "✓ Mensaje para cliente copiado al portapapeles.";
+      t.style.display = "block";
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.style.display = "none"; }, 3000);
+    }).catch(() => alert("No se pudo copiar. Usá Ctrl+C manualmente."));
   }
 
   document.querySelectorAll("#calcRefiToggle button").forEach(b =>
     b.addEventListener("click", () => setCalcModo(b.dataset.calc)));
-  document.querySelectorAll("#modoRefiToggle button").forEach(b =>
-    b.addEventListener("click", () => setModoRefi(b.dataset.modorefi)));
-  ["capital","valorCuota","cuotasTotales","pagadas","enMora","fechaMora","fechaHasta",
-   "tasaMora","cuotas","interesRefi","montoMensual","maxCuotas"]
+  // Campos editables de texto/número
+  ["cuotas","interesRefi","maxCuotas"]
     .forEach(id => $(id).addEventListener("input", calcular));
 
-  // Fecha de cálculo por defecto = hoy
+  // ===== Login + integración con el sistema (servicio read-only) =====
+  const API_BASE = "";
+  let creds = { user: sessionStorage.getItem("refi_u") || "", pass: sessionStorage.getItem("refi_p") || "" };
+
+  function esc(s){ return String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+  function showLogin(err){ $("login").style.display = "flex"; $("loginErr").textContent = err || ""; }
+  function hideLogin(){ $("login").style.display = "none"; }
+
+  function doLogin(){
+    const u = $("loginUser").value.trim();
+    const p = $("loginPass").value;
+    if(!u || !p){ $("loginErr").textContent = "Completá usuario y contraseña."; return; }
+    creds = { user: u, pass: p };
+    sessionStorage.setItem("refi_u", u);
+    sessionStorage.setItem("refi_p", p);
+    $("loginErr").textContent = "";
+    hideLogin();
+  }
+  function logout(err){
+    creds = { user: "", pass: "" };
+    sessionStorage.removeItem("refi_u");
+    sessionStorage.removeItem("refi_p");
+    showLogin(err);
+  }
+
+  async function apiGet(path){
+    const r = await fetch(API_BASE + path, { headers: { "x-app-user": creds.user, "x-app-pass": creds.pass } });
+    if(r.status === 401){ logout("Usuario o contraseña inválidos."); throw new Error("No autorizado"); }
+    const data = await r.json().catch(() => ({}));
+    if(!r.ok) throw new Error(data?.error || ("Error " + r.status));
+    return data;
+  }
+
+  async function buscar(){
+    const q = $("buscarInput").value.trim();
+    const cont = $("buscarResultados");
+    const msg = $("buscarMsg");
+    cont.innerHTML = "";
+    if(q.length < 3){ msg.textContent = "Ingresá al menos 3 caracteres (DNI o apellido)."; return; }
+    msg.textContent = "Buscando…";
+    try{
+      const data = await apiGet("/api/buscar?q=" + encodeURIComponent(q));
+      const mockTag = data.mock ? ' <span class="badge-mock">DEMO</span>' : '';
+      if(!data.resultados || !data.resultados.length){ msg.innerHTML = "Sin resultados." + mockTag; return; }
+      msg.innerHTML = "Elegí el crédito a refinanciar:" + mockTag;
+      data.resultados.forEach(cli => {
+        const div = document.createElement("div");
+        div.className = "resitem";
+        let html = '<div class="nom">' + esc(cli.nombre) + '</div><div class="meta">DNI ' + esc(cli.dni) + '</div>';
+        if(!cli.creditos || !cli.creditos.length){ html += '<div class="meta">(sin créditos)</div>'; }
+        (cli.creditos || []).forEach(cr => {
+          html += '<button type="button" class="credchip"'
+                + ' data-id="' + esc(cr.id) + '"'
+                + ' data-nombre="' + esc(cli.nombre) + '"'
+                + ' data-dni="' + esc(cli.dni) + '"'
+                + ' data-comercio="' + esc(cr.comercioNombre || "") + '">'
+                + esc(cr.comercioNombre || "Crédito") + ' · ' + cr.cantCuotas + ' cuotas · ' + fmt(cr.montoCredito)
+                + ' · <strong>' + esc(cr.estado) + '</strong></button>';
+        });
+        div.innerHTML = html;
+        cont.appendChild(div);
+      });
+      cont.querySelectorAll(".credchip").forEach(b => b.addEventListener("click", () => {
+        currentCliente = { nombre: b.dataset.nombre || "", dni: b.dataset.dni || "", comercio: b.dataset.comercio || "" };
+        cargarCredito(b.dataset.id);
+      }));
+    }catch(e){
+      msg.textContent = "No se pudo buscar: " + e.message;
+    }
+  }
+
+  async function cargarCredito(id){
+    const msg = $("buscarMsg");
+    msg.textContent = "Cargando crédito…";
+    try{
+      const data = await apiGet("/api/credito?id=" + encodeURIComponent(id));
+      const c = data.credito, r = data.resumen;
+      setMonto("capital", c.montoCredito);
+      setMonto("valorCuota", c.montoPorCuota);
+      $("cuotasTotales").value = c.cantCuotas || "";
+      $("pagadas").value       = r.cuotasPagadas || 0;
+      $("enMora").value        = r.cuotasEnMora || 0;
+      setFecha("fechaMora", r.inicioMora ? r.inicioMora.slice(0, 10) : "");
+      calcular();
+      const mockTag = data.mock ? ' (DEMO)' : '';
+      msg.innerHTML = "✓ Cargado: <strong>" + esc(c.clienteNombre) + "</strong> · " + esc(c.comercioNombre)
+                    + mockTag + ". Ahora cargá la tasa de mora y el plan abajo.";
+    }catch(e){
+      msg.textContent = "No se pudo cargar el crédito: " + e.message;
+    }
+  }
+
+  $("buscarBtn").addEventListener("click", buscar);
+  $("buscarInput").addEventListener("keydown", (e) => { if(e.key === "Enter") buscar(); });
+
+  // Login
+  $("loginBtn").addEventListener("click", doLogin);
+  $("loginPass").addEventListener("keydown", (e) => { if(e.key === "Enter") doLogin(); });
+  const IS_LOCAL = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+  if(IS_LOCAL || (creds.user && creds.pass)) hideLogin(); else showLogin();
+
+  // Fecha de cálculo por defecto = hoy (campo bloqueado)
   const hoy = new Date();
-  $("fechaHasta").value =
-    hoy.getFullYear() + "-" +
+  const hoyIso = hoy.getFullYear() + "-" +
     String(hoy.getMonth()+1).padStart(2,"0") + "-" +
     String(hoy.getDate()).padStart(2,"0");
+  setFecha("fechaHasta", hoyIso);
 
-  calcular();
+  setCalcModo("porCuotas"); // inicializa modo, visibilidad y hints
 </script>

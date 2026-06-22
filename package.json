@@ -1,0 +1,9 @@
+{
+  "name": "generador-refinanciacion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Calculadora de refinanciacion + servicio read-only que lee creditos de sysadminpf (Firestore).",
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

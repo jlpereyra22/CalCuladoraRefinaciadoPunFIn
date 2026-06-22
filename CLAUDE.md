@@ -3,11 +3,12 @@
 > Identidad, reglas y arquitectura del proyecto. Documento vivo: si cambia la lógica, se actualiza acá primero.
 >
 > **Proyecto:** Generador de Refinanciación (calculadora) · parte del ecosistema **Punto Financiamiento** (`sysadminpf`)
-> **Tipo:** Herramienta **standalone** · sitio estático (un solo `index.html`)
-> **Estado:** Etapa 1 — **deployada en GitHub Pages**, standalone con carga manual
+> **Tipo:** Herramienta standalone (Etapa 1) + integración Firebase en desarrollo (Etapa 2)
+> **Estado:** Etapa 1 — deployada en GitHub Pages (`main`). Etapa 2 — en desarrollo (`integracion-firebase`), **pendiente deploy en Netlify personal**.
 > **Repo:** https://github.com/jlpereyra22/CalCuladoraRefinaciadoPunFIn
-> **URL pública:** https://jlpereyra22.github.io/CalCuladoraRefinaciadoPunFIn/
-> Última actualización: 2026-06-18
+> **URL pública (Etapa 1):** https://jlpereyra22.github.io/CalCuladoraRefinaciadoPunFIn/
+> **Netlify (Etapa 2):** pendiente — cuenta personal de ChuecoTriquis, NO la de sysadminpf.
+> Última actualización: 2026-06-19
 
 ---
 
@@ -15,7 +16,9 @@
 
 Calculadora rápida para **reestructurar (refinanciar) créditos en mora** de Punto Financiamiento. Un cliente que cayó en mora (pagó algunas cuotas y dejó de pagar) puede renegociar la deuda. Esta herramienta calcula, con carga manual de datos, **cuánto se refinancia y en qué plan**.
 
-No se conecta a ningún backend ni base de datos. No lee ni escribe en `sysadminpf`. **No maneja credenciales.** Todo el cálculo es local en el navegador.
+**Etapa 1 (standalone):** no se conecta a ningún backend. Todo el cálculo es local en el navegador con carga manual de datos.
+
+**Etapa 2 (integración, rama `integracion-firebase`):** se conecta a Firestore de `sysadminpf` a través de **Netlify Functions** de solo lectura (Firebase Admin SDK con `Cloud Datastore Viewer`). El front busca cliente/crédito por DNI o nombre, autocarga los datos, y el operador solo completa la tasa de mora y elige el plan.
 
 ---
 

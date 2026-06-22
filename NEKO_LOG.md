@@ -4,6 +4,65 @@
 
 ---
 
+## 2026-06-19 — Etapa 2: integración Firebase (en progreso, no deployada)
+
+### Rama: `integracion-firebase`
+
+Todo el trabajo de integración va en esta rama. La rama `main` queda **congelada** como standalone (GitHub Pages). Dos ramas, dos deployments independientes.
+
+### Arquitectura de integración
+
+- **Netlify Functions** (Node.js serverless) como BFF de solo lectura entre el front y Firestore.
+- **Service account GCP** read-only: `refi-readonly@sysadminpf.iam.gserviceaccount.com` con rol `Cloud Datastore Viewer`. Asignado por facumierke (compañero que tiene acceso GCP). Key descargada como `service-account.json` (gitignored).
+- **projectId Firebase:** `sysadminpf`.
+- **Cuenta Netlify:** cuenta PERSONAL de ChuecoTriquis (no la de sysadminpf en producción). El Netlify CLI en la máquina apuntaba a la cuenta de prod — verificar/redirigir antes de deployar.
+
+### Endpoints
+- `GET /api/buscar?q=<DNI o nombre>` → lista de clientes con sus créditos.
+- `GET /api/credito?id=<creditoId>` → detalle del crédito + cuotas clasificadas (pagada/mora/pendiente).
+
+### Modo mock
+Sin credenciales → funciones devuelven datos hardcodeados (crédito demo 12 cuotas, 2 pagadas, 2 mora, 8 pendientes). Permite desarrollo sin tocar Firebase.
+
+### Login gate
+Usuario/contraseña simples validados server-side via `APP_USER`/`APP_PASS` env vars en Netlify. Front los envía en headers `x-app-user`/`x-app-pass`. En `netlify dev` local se bypasea (sin fricción para probar). 401 → auto-logout en el front. Creds en `sessionStorage`.
+
+### Búsqueda
+- **Por DNI:** el front strips puntos/espacios antes de enviar. La función prueba match string y luego match número (Firestore almacena el DNI a veces como string, a veces como número).
+- **Por nombre:** prefix search con `orderBy("nombre").startAt(q).endAt(q + "")`. Case-sensitive; los apellidos están en formato "Apellido Nombre". Recomendación: usar DNI para búsquedas confiables.
+
+### UX bloques
+- Bloque 1 y 2: **completamente deshabilitados** al autocargar (no editables por el operador, para evitar errores). Solo la `tasaMora` en bloque 2 es manual y editable (destacada visualmente).
+- Modo de interés en bloque 3: sin toggle, se asigna automáticamente según el modo (por cuotas → % total; por monto mensual → % por cuota).
+
+### Archivos nuevos en `integracion-firebase`
+| Archivo | Contenido |
+|---|---|
+| `netlify/functions/_lib.js` | Utilidades compartidas: isMock, getDb, corsHeaders, requireAuth, clasificarCuota |
+| `netlify/functions/_mock.js` | Datos demo hardcodeados |
+| `netlify/functions/buscar.js` | Endpoint búsqueda |
+| `netlify/functions/credito.js` | Endpoint detalle crédito |
+| `netlify.toml` | Publish=`.`, functions=`netlify/functions`, redirects `/api/*` |
+| `package.json` | firebase-admin como dependencia |
+| `.env.example` | Plantilla de variables (committed) |
+| `.env` | Config local (gitignored, con FIREBASE_SERVICE_ACCOUNT_PATH) |
+
+### Estado al cerrar sesión
+- Todo funciona en local con datos reales de Firestore (probado con DNIs reales).
+- Archivos modificados/nuevos **sin commitear** (esperando "ok" de ChuecoTriquis para commitear y pushear).
+- **Próximo paso:** commit de la rama `integracion-firebase` → push → conectar a Netlify personal → setear env vars → probar URL pública.
+
+### Variables de entorno para Netlify deploy
+```
+FIREBASE_SERVICE_ACCOUNT=<contenido completo de service-account.json en una línea>
+FIREBASE_PROJECT_ID=sysadminpf
+APP_USER=<usuario elegido>
+APP_PASS=<contraseña elegida>
+ALLOWED_ORIGIN=<URL del sitio Netlify una vez creado>
+```
+
+---
+
 ## 2026-06-18 — Repo + deploy Etapa 1
 
 - **Repo creado y pusheado** (commit inicial autorizado explícitamente por ChuecoTriquis; init + push los hizo Claudia Seria por única vez). Identidad git **local** al repo (`jlpereyra22` / pereyrajose@nexotuc.com). Chequeo de secretos en staged: OK.
